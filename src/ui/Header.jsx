@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SearchQuery from './SearchQuery';
+import SearchQuery from '../features/order/SearchQuery';
 import Username from '../features/user/Username';
 
 export default function Header() {
