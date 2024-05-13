@@ -1,6 +1,12 @@
 import { Form, redirect, useActionData, useNavigation } from 'react-router-dom';
-import Button from '../../ui/Button';
+import { useEffect, useState } from 'react';
 import { createOrder } from '../../services/apiRestaurant';
+import { useSelector, useDispatch } from 'react-redux';
+import { getCart, clearCart, getTotalCartPrice } from '../cart/cartSlice';
+
+import store from '../../store/store';
+import Button from '../../ui/Button';
+import EmptyCart from '../cart/EmptyCart';
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -33,12 +39,16 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
-  // const [withPriority, setWithPriority] = useState(false);
-  const cart = fakeCart;
+  const [withPriority, setWithPriority] = useState(false);
+  const cart = useSelector(getCart);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === 'submitting';
-
   const formErrors = useActionData();
+  const username = useSelector((state) => state.user.username);
+  const currentTotalPrice = useSelector(getTotalCartPrice);
+  const priorityPrice = withPriority ? 0.2 * currentTotalPrice : 0;
+  const totalPrice = currentTotalPrice + priorityPrice;
+
   return (
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
@@ -46,12 +56,18 @@ function CreateOrder() {
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input type="text" name="customer" className="input grow" required />
+          <input
+            value={username}
+            type="text"
+            name="customer"
+            className="input grow"
+            required
+          />
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Phone number</label>
-          <div class="grow">
+          <div className="grow">
             <input type="tel" name="phone" className="input w-full" required />
           </div>
           {formErrors?.phone && (
@@ -78,8 +94,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)}
             className="h-6 w-6 accent-yellow-400 focus:outline-none focus:ring focus:ring-yellow-400
             focus:ring-offset-2"
           />
@@ -89,7 +105,7 @@ function CreateOrder() {
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button type="primary">
-            {isSubmitting ? 'Submitting...' : 'Order now'}
+            {isSubmitting ? 'Submitting...' : `Order now from $${totalPrice}`}
           </Button>
         </div>
       </Form>
@@ -105,7 +121,7 @@ export async function action({ request }) {
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
-    priority: data.priority === 'on',
+    priority: data.priority === 'true',
   };
 
   const errors = {};
@@ -115,6 +131,7 @@ export async function action({ request }) {
   if (Object.keys(errors).length > 0) return errors;
 
   const newOrder = await createOrder(order);
+  store.dispatch(clearCart());
   return redirect(`/order/${newOrder.id}`);
 }
 
