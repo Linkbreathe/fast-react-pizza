@@ -1,6 +1,10 @@
-# React + Vite
+# Link's Pizza Order program 🍕
 
-hello this is a simple program using the react and tailwind
+A pizza order program mainly be built by:  
+🍔 Frontend: React, Javascript, Tailwind  
+🍟 Backend: Mock API  
+🌭 library: Redux && Redux-Devtools-Extension
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Timeline ⏰
+
+**From**:May 9, 2024 - **End**:May 17, 2024 (with **9 commits**)

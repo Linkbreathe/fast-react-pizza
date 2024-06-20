@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { createStore } from 'redux';
 import userReducer from '../features/user/userSlice';
 import cartReducer from '../features/cart/cartSlice';
 import { configureStore } from '@reduxjs/toolkit';

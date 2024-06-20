@@ -6,7 +6,6 @@ import { deleteItem } from './cartSlice';
 export default function DeleteItem({ pizzaId }) {
   const dispatch = useDispatch();
   function handleDeleteItem() {
-    console.log('handleDeleteItem');
     dispatch(deleteItem(pizzaId));
   }
   return (
